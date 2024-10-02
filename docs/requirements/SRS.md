@@ -143,3 +143,6 @@ This screen enables the user to input details of a new book, such as title, auth
 - **Synchronization**: Future versions could introduce data syncing across devices.
 - **Dark Mode**: Support for dark mode user interface.
 - **Book Cover Images**: Allow users to upload or select images for book covers.
+
+### Software Requirements Specification
+You can review the software requirements specification for the application [here](https://github.com/Krame1S/book-tracker-android-app/edit/main/docs/requirements/SRS.md).
