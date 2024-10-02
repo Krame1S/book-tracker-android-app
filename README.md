@@ -94,7 +94,7 @@
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/username/BookTracker.git
+   git clone https://github.com/username/book-tracker-android-app.git
    ```
 2. Open the project in Android Studio.
 3. Sync the Gradle dependencies.
@@ -107,4 +107,3 @@
 - **Synchronization**: Future versions could introduce data syncing across devices.
 - **Dark Mode**: Support for dark mode user interface.
 - **Book Cover Images**: Allow users to upload or select images for book covers.
-- 
