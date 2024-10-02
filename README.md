@@ -1,5 +1,21 @@
 # BookTracker - README
 
+## Navigation
+- [1. Introduction](#1-introduction)
+- [2. User Requirements](#2-user-requirements)
+  - [2.1 Software Interfaces](#21-software-interfaces)
+  - [2.2 User Interface](#22-user-interface)
+  - [2.3 User Characteristics](#23-user-characteristics)
+  - [2.4 Assumptions and Dependencies](#24-assumptions-and-dependencies)
+- [3. System Requirements](#3-system-requirements)
+  - [3.1 Functional Requirements](#31-functional-requirements)
+  - [3.2 Non-Functional Requirements](#32-non-functional-requirements)
+    - [3.2.1 Quality Attributes](#321-quality-attributes)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Future Enhancements](#future-enhancements)
+
 ## 1. Introduction
 
 **BookTracker** is an application designed to help users organize and track their reading habits. Users can create collections of books (such as "To Read," "Currently Reading," or custom collections) and manage their books within these collections. The app allows users to:
