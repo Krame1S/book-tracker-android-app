@@ -99,6 +99,26 @@
 
 ---
 
+## 4. Screens
+
+### 4.1 Book Collections
+This screen displays the collections of books the user has created, such as "To Read" or "Currently Reading." It also allows the user to create new collections.  
+![Book Collections](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/5470077955028935147.jpg)
+
+### 4.2 Inside a Book Collection
+This screen shows the books within a selected collection, with options to view details, update progress, or remove books.  
+![Inside a Book Collection](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/5470077955028935148.jpg)
+
+### 4.3 Add Collection
+This screen allows the user to add a new collection by entering a collection name.  
+![Add Collection](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/5470077955028935149.jpg)
+
+### 4.4 Add New Book
+This screen enables the user to input details of a new book, such as title, author, and initial reading progress.  
+![Add New Book](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/5470077955028935150.jpg)
+
+---
+
 ## Getting Started
 
 ### Prerequisites
