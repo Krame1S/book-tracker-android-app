@@ -3,7 +3,7 @@
 **BookTracker** is an Android app designed to help users organize and track their reading progress across different book collections.
 
 ## Features
-- Create custom book collections (e.g., "To Read," "Currently Reading").
+- Create custom book collections.
 - Track reading progress, add ratings, and write notes for each book.
 - Manage books within collections (add, edit, delete).
 - User authentication for personalized tracking.
@@ -24,3 +24,4 @@
 1. Clone the repository:
    ```bash
    git clone https://github.com/username/book-tracker-android-app.git
+   ```
