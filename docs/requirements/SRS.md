@@ -44,7 +44,6 @@
   - **PostgreSQL** for managing and storing user data (with support for multi-user authorization).
   - Other libraries/systems: To be determined.
 
-### 2.2 User Interface
 
 ### 2.2 User Interface
 
