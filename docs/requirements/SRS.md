@@ -48,12 +48,12 @@
 ### 2.2 User Interface
 
 ### 2.2.1 Book Collections
-This screen displays the collections of books the user has created, such as "To Read" or "Currently Reading." It also allows the user to create new collections.  
+This screen displays the collections of books the user has created. It also allows the user to create new collections.  
 ![Book Collections](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/smartmockups_m23gzbky.jpg)
 
 ### 2.2.2 Inside a Book Collection
 This screen shows the books within a selected collection, with options to view details, update progress, or remove books.  
-![Inside a Book Collection](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/smartmockups_m23h0bda.jpg)
+![Inside a Book Collection](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/smartmockups_m23h0jxw.jpg)
 
 ### 2.2.3 Add a Book
 This screen allows the user to add a book to a collection by entering details such as the book’s title, author, and current reading progress.  
@@ -65,19 +65,19 @@ This screen lets the user create a new book collection by entering a collection 
 
 ### 2.2.5 Book Details
 This screen displays detailed information about a selected book, including the title, author, current progress, and any notes or ratings the user has added.  
-![Book Details](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/smartmockups_m23h0bda.jpg)
+![Book Details](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/smartmockups_m23h5kxj.jpg)
 
 ### 2.2.6 Edit a Book
 This screen allows the user to edit details of a book, such as updating its reading progress, changing the collection it belongs to, or removing it entirely.  
-![Edit a Book](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/smartmockups_m23h0bda.jpg)
+![Edit a Book](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/smartmockups_m23h5yf1.jpg)
 
 ### 2.2.7 Settings
 This screen allows the user to adjust app settings, such as theme preferences, sorting options, and notification settings.  
-![Settings](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/smartmockups_m23h0bda.jpg)
+![Settings](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/smartmockups_m23hahhe.jpg)
 
 ### 2.2.8 Search
 This screen allows users to search for books within their collections by entering a search query. The results are displayed in a list, with options to view and manage the found books.  
-![Search](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/smartmockups_m23h0bda.jpg)
+![Search](https://github.com/Krame1S/book-tracker-android-app/blob/main/docs/mockups/smartmockups_m23hauja.jpg)
 
   
 - **User Actions:**
