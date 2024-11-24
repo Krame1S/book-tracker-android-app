@@ -9,6 +9,7 @@ import com.example.booktracker.ui.AddBookScreen
 import com.example.booktracker.ui.AddCollectionScreen
 import com.example.booktracker.ui.CollectionDetailScreen
 import com.example.booktracker.ui.MainScreen
+import com.example.booktracker.ui.SettingsScreen
 import com.example.booktracker.ui.theme.BookTrackerTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,8 +26,9 @@ fun BookTrackerApp() {
     var selectedCollection by remember { mutableStateOf<Collection?>(null) }
     var isAddingBook by remember { mutableStateOf(false) }
     var isAddingCollection by remember { mutableStateOf(false) }
+    var isSettingsScreen by remember { mutableStateOf(false) }
+    var isDarkTheme by remember { mutableStateOf(false) } // Состояние для темы
 
-    // Mutable list of collections to allow adding/removing
     val sampleCollections = remember {
         mutableStateListOf(
             Collection("To Read", mutableStateListOf("The Hobbit", "1984")),
@@ -35,49 +37,54 @@ fun BookTrackerApp() {
         )
     }
 
-    BookTrackerTheme {
+    // Функция для удаления книги
+    fun deleteBook(collection: Collection, bookTitle: String) {
+        collection.books.remove(bookTitle)
+    }
+
+    BookTrackerTheme(darkTheme = isDarkTheme) {
         when {
+            isSettingsScreen -> {
+                SettingsScreen(
+                    isDarkTheme = isDarkTheme, // Передаем текущую тему
+                    onThemeToggle = { isDarkTheme = it }, // Изменяем тему
+                    onBackClick = { isSettingsScreen = false }
+                )
+            }
             selectedCollection == null && !isAddingCollection -> {
                 MainScreen(
                     collections = sampleCollections,
                     onCollectionClick = { collection ->
                         selectedCollection = collection
                     },
-                    onAddCollectionClick = { isAddingCollection = true } // Open AddCollectionScreen
+                    onAddCollectionClick = { isAddingCollection = true },
+                    onSettingsClick = { isSettingsScreen = true }
                 )
             }
-            isAddingBook -> {
-                AddBookScreen(
-                    collection = selectedCollection!!,
-                    onAddBook = { newBook ->
-                        selectedCollection?.books?.add(newBook) // Add new book to collection
-                    },
-                    onBackClick = {
-                        isAddingBook = false
-                    }
-                )
-            }
-            isAddingCollection -> {
-                AddCollectionScreen(
-                    onAddCollection = { newCollectionName ->
-                        sampleCollections.add(Collection(newCollectionName, mutableStateListOf())) // Add new collection
-                        isAddingCollection = false // Go back to the main screen
-                    },
-                    onBackClick = {
-                        isAddingCollection = false // Go back to the main screen
-                    }
-                )
-            }
-            else -> {
+            selectedCollection != null -> {
                 CollectionDetailScreen(
                     collection = selectedCollection!!,
                     onBackClick = { selectedCollection = null },
                     onAddBookClick = {
-                        isAddingBook = true // Trigger the AddBookScreen
+                        isAddingBook = true
                     },
                     onDeleteCollection = {
                         sampleCollections.remove(selectedCollection!!)
-                        selectedCollection = null // Reset selected collection
+                        selectedCollection = null
+                    },
+                    onDeleteBook = { bookTitle ->
+                        deleteBook(selectedCollection!!, bookTitle) // Удаляем книгу
+                    }
+                )
+            }
+            else -> {
+                AddBookScreen(
+                    collection = selectedCollection!!,
+                    onAddBook = { newBook ->
+                        selectedCollection?.books?.add(newBook)
+                    },
+                    onBackClick = {
+                        isAddingBook = false
                     }
                 )
             }

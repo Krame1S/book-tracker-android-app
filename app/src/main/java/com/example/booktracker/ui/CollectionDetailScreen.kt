@@ -21,7 +21,8 @@ fun CollectionDetailScreen(
     collection: Collection,
     onBackClick: () -> Unit,
     onAddBookClick: () -> Unit,
-    onDeleteCollection: () -> Unit
+    onDeleteCollection: () -> Unit,
+    onDeleteBook: (String) -> Unit // Добавим обработчик для удаления книги
 ) {
     Scaffold(
         topBar = {
@@ -53,7 +54,7 @@ fun CollectionDetailScreen(
                     BookItem(
                         bookTitle = bookTitle,
                         onDeleteClick = {
-                            collection.books.remove(bookTitle) // Directly remove the book
+                            onDeleteBook(bookTitle) // Вызываем функцию для удаления книги
                         }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -69,7 +70,6 @@ fun CollectionDetailScreen(
         }
     }
 }
-
 
 @Composable
 fun BookItem(bookTitle: String, onDeleteClick: () -> Unit) {
@@ -98,6 +98,7 @@ fun BookItem(bookTitle: String, onDeleteClick: () -> Unit) {
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewCollectionDetailScreen() {
@@ -107,8 +108,10 @@ fun PreviewCollectionDetailScreen() {
             collection = sampleCollection,
             onBackClick = {},
             onAddBookClick = {},
-            onDeleteCollection = {} // Add a no-op lambda for the delete collection parameter
+            onDeleteCollection = {}, // Заглушка для удаления коллекции
+            onDeleteBook = {} // Заглушка для удаления книги
         )
     }
 }
+
 

@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 private val DarkColorScheme = darkColorScheme(
     primary = SlateGray,
     secondary = MediumGray,
-    background = SlateGray,
+    background = DarkBackground, // Новый цвет для фона
     surface = MediumGray,
     onPrimary = OffWhite,
     onSecondary = OffWhite,
@@ -19,13 +19,14 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = SlateGray,
     secondary = MediumGray,
-    background = AlmostWhite,
-    surface = AlmostWhite,
+    background = LightBackground, // Новый цвет для фона
+    surface = LightSurface, // Новый цвет для поверхности коллекций
     onPrimary = OffWhite,
     onSecondary = OffWhite,
     onBackground = SlateGray,
     onSurface = SlateGray
 )
+
 
 @Composable
 fun BookTrackerTheme(
