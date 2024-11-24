@@ -27,7 +27,7 @@
 ## Диаграммы активности
 
 ### Основные процессы:  
-- [Создание коллекции](./active/add-collection.png)  
+- [Создание коллекции](./active/create-collection.png)  
 - [Добавление книги](./active/add-book.png)  
 - [Редактирование книги](./active/edit-book.png)  
 
