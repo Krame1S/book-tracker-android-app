@@ -12,18 +12,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.booktracker.data.Collection
-import com.example.booktracker.ui.theme.BookTrackerTheme
+import com.example.booktracker.data.BookCollection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddBookScreen(collection: Collection, onAddBook: (String) -> Unit, onBackClick: () -> Unit) {
+fun AddBookScreen(bookCollection: BookCollection, onAddBook: (String) -> Unit, onBackClick: () -> Unit) {
     var bookTitle by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add Book to ${collection.name}") },
+                title = { Text("Add Book to ${bookCollection.name}") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -36,9 +35,9 @@ fun AddBookScreen(collection: Collection, onAddBook: (String) -> Unit, onBackCli
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center
+                .padding(16.dp)
         ) {
+            // Перемещаем TextField на верхнюю часть экрана
             TextField(
                 value = bookTitle,
                 onValueChange = { bookTitle = it },
@@ -66,9 +65,9 @@ fun AddBookScreen(collection: Collection, onAddBook: (String) -> Unit, onBackCli
 @Preview(showBackground = true)
 @Composable
 fun PreviewAddBookScreen() {
-    val sampleCollections = listOf(
-        Collection("To Read", mutableListOf("The Hobbit", "1984")), // Ensure mutableListOf is used
-        Collection("Favorites", mutableListOf("Brave New World", "Fahrenheit 451")),
-        Collection("Completed", mutableListOf("Moby Dick", "War and Peace"))
+    val sampleBookCollections = listOf(
+        BookCollection("To Read", mutableListOf("The Hobbit", "1984")), // Ensure mutableListOf is used
+        BookCollection("Favorites", mutableListOf("Brave New World", "Fahrenheit 451")),
+        BookCollection("Completed", mutableListOf("Moby Dick", "War and Peace"))
     )
 }

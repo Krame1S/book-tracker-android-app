@@ -8,26 +8,35 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.booktracker.data.Collection
+import com.example.booktracker.data.BookCollection
 import com.example.booktracker.ui.theme.BookTrackerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollectionDetailScreen(
-    collection: Collection,
+    bookCollection: BookCollection,
     onBackClick: () -> Unit,
     onAddBookClick: () -> Unit,
     onDeleteCollection: () -> Unit,
     onDeleteBook: (String) -> Unit // Добавим обработчик для удаления книги
 ) {
+    var books by remember { mutableStateOf(bookCollection.books) } // Состояние для отслеживания книг
+
+    // Функция для удаления книги и обновления состояния
+    val handleDeleteBook = { bookTitle: String ->
+        books = books.filter { it != bookTitle }.toMutableList() // Удаляем книгу из списка
+        onDeleteBook(bookTitle) // Вызываем callback для выполнения других действий (если нужно)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(collection.name) },
+                title = { Text(bookCollection.name) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -47,23 +56,46 @@ fun CollectionDetailScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            LazyColumn(
-                modifier = Modifier.weight(1F)
-            ) {
-                items(collection.books) { bookTitle ->
-                    BookItem(
-                        bookTitle = bookTitle,
-                        onDeleteClick = {
-                            onDeleteBook(bookTitle) // Вызываем функцию для удаления книги
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
+            if (books.isEmpty()) {
+                // Если книг нет в коллекции, показываем сообщение по центру экрана
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("No books in this collection.")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Press button bellow to add new books.")
+                    }
+                }
+            } else {
+                // Если книги есть, показываем их список
+                LazyColumn(
+                    modifier = Modifier.weight(1F)
+                ) {
+                    items(books) { bookTitle ->
+                        BookItem(
+                            bookTitle = bookTitle,
+                            onDeleteClick = {
+                                handleDeleteBook(bookTitle) // Удаляем книгу и обновляем список
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
             }
 
+            // Кнопка добавления книги всегда видна внизу
+            Spacer(modifier = Modifier.height(16.dp)) // Добавим отступ сверху для кнопки
             Button(
                 onClick = onAddBookClick,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)  // Паддинг для кнопки
             ) {
                 Text("Add Book")
             }
@@ -98,14 +130,13 @@ fun BookItem(bookTitle: String, onDeleteClick: () -> Unit) {
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewCollectionDetailScreen() {
-    val sampleCollection = Collection("To Read", mutableListOf())
+    val sampleBookCollection = BookCollection("To Read", mutableListOf("Book 1", "Book 2"))
     BookTrackerTheme {
         CollectionDetailScreen(
-            collection = sampleCollection,
+            bookCollection = sampleBookCollection,
             onBackClick = {},
             onAddBookClick = {},
             onDeleteCollection = {}, // Заглушка для удаления коллекции
@@ -113,5 +144,3 @@ fun PreviewCollectionDetailScreen() {
         )
     }
 }
-
-

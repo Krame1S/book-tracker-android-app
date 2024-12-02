@@ -1,16 +1,15 @@
 package com.example.booktracker
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
-import com.example.booktracker.data.Collection
-import com.example.booktracker.ui.AddBookScreen
-import com.example.booktracker.ui.AddCollectionScreen
-import com.example.booktracker.ui.CollectionDetailScreen
-import com.example.booktracker.ui.MainScreen
-import com.example.booktracker.ui.SettingsScreen
+import androidx.compose.ui.platform.LocalContext
+import com.example.booktracker.data.BookCollection
+import com.example.booktracker.ui.*
 import com.example.booktracker.ui.theme.BookTrackerTheme
+import android.content.Context
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,71 +22,178 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BookTrackerApp() {
-    var selectedCollection by remember { mutableStateOf<Collection?>(null) }
+    val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("book_tracker_prefs", Context.MODE_PRIVATE)
+
+    // State variables
+    var currentUser by remember { mutableStateOf(sharedPreferences.getString("current_user", null)) }
+    var isRegisterScreen by remember { mutableStateOf(false) }
+    var selectedBookCollection by remember { mutableStateOf<BookCollection?>(null) }
     var isAddingBook by remember { mutableStateOf(false) }
     var isAddingCollection by remember { mutableStateOf(false) }
     var isSettingsScreen by remember { mutableStateOf(false) }
-    var isDarkTheme by remember { mutableStateOf(false) } // Состояние для темы
+    var isDarkTheme by remember { mutableStateOf(false) }
 
-    val sampleCollections = remember {
-        mutableStateListOf(
-            Collection("To Read", mutableStateListOf("The Hobbit", "1984")),
-            Collection("Favorites", mutableStateListOf("Brave New World", "Fahrenheit 451")),
-            Collection("Completed", mutableStateListOf("Moby Dick", "War and Peace"))
-        )
+    // Mutable list to hold collections
+    val sampleCollections = remember { mutableStateListOf<BookCollection>() }
+
+    // Load collections on app startup
+    LaunchedEffect(currentUser) {
+        if (currentUser != null) {
+            Log.d("BookTrackerApp", "Loading collections for user: $currentUser")
+            val collections = loadUserCollections(context, currentUser)
+            sampleCollections.clear()
+            collections?.let { sampleCollections.addAll(it) }
+            Log.d("BookTrackerApp", "Loaded collections: $sampleCollections")
+        }
     }
 
-    // Функция для удаления книги
-    fun deleteBook(collection: Collection, bookTitle: String) {
-        collection.books.remove(bookTitle)
+    // Function to save collections
+    fun saveCollections() {
+        Log.d("BookTrackerApp", "Saving collections: $sampleCollections")
+        saveUserCollections(context, currentUser, sampleCollections)
+    }
+
+    // Handle login process
+    fun handleLogin(username: String) {
+        Log.d("BookTrackerApp", "User logged in: $username")
+        sharedPreferences.edit().putString("current_user", username).apply()
+        currentUser = username
+        val collections = loadUserCollections(context, username)
+        sampleCollections.clear()
+        collections?.let { sampleCollections.addAll(it) }
+    }
+
+    // Handle account deletion
+    fun handleDeleteAccount() {
+        Log.d("BookTrackerApp", "User account deleted: $currentUser")
+        if (currentUser != null) {
+            deleteUserAccount(context, currentUser!!)
+        }
+        currentUser = null
+        selectedBookCollection = null
+        isAddingBook = false
+        isAddingCollection = false
+        isSettingsScreen = false
+        sampleCollections.clear()
     }
 
     BookTrackerTheme(darkTheme = isDarkTheme) {
         when {
+            currentUser == null -> {
+                if (isRegisterScreen) {
+                    RegisterScreen(
+                        onRegister = { username, password ->
+                            val users = loadUsers(context)
+                            if (!userExists(users, username)) {
+                                users.add(User(username, password))
+                                saveUsers(context, users)
+                                isRegisterScreen = false // Switch to login screen
+                            }
+                        },
+                        onBackClick = { isRegisterScreen = false }
+                    )
+                } else {
+                    LoginScreen(
+                        onLogin = { username, password ->
+                            val users = loadUsers(context)
+                            if (isPasswordCorrect(users, username, password)) {
+                                handleLogin(username)
+                            } else {
+                                Log.d("BookTrackerApp", "Invalid login attempt")
+                            }
+                        },
+                        onRegisterClick = { isRegisterScreen = true }
+                    )
+                }
+            }
             isSettingsScreen -> {
                 SettingsScreen(
-                    isDarkTheme = isDarkTheme, // Передаем текущую тему
-                    onThemeToggle = { isDarkTheme = it }, // Изменяем тему
-                    onBackClick = { isSettingsScreen = false }
+                    isDarkTheme = isDarkTheme,
+                    onThemeToggle = { isDarkTheme = it },
+                    onBackClick = { isSettingsScreen = false },
+                    onDeleteAccountClick = { handleDeleteAccount() }
                 )
             }
-            selectedCollection == null && !isAddingCollection -> {
+            selectedBookCollection == null && !isAddingCollection -> {
                 MainScreen(
-                    collections = sampleCollections,
+                    bookCollections = sampleCollections,
                     onCollectionClick = { collection ->
-                        selectedCollection = collection
+                        selectedBookCollection = collection
                     },
-                    onAddCollectionClick = { isAddingCollection = true },
-                    onSettingsClick = { isSettingsScreen = true }
+                    onAddCollectionClick = {
+                        isAddingCollection = true
+                    },
+                    onSettingsClick = { isSettingsScreen = true },
+                    onLogoutClick = {
+                        Log.d("BookTrackerApp", "Logging out user: $currentUser")
+                        sharedPreferences.edit().remove("current_user").apply()
+                        currentUser = null
+                        selectedBookCollection = null
+                        isAddingBook = false
+                        isAddingCollection = false
+                        isSettingsScreen = false
+                        sampleCollections.clear()
+                    }
+                    // Reusing handleDeleteAccount for "Log Out"
                 )
             }
-            selectedCollection != null -> {
-                CollectionDetailScreen(
-                    collection = selectedCollection!!,
-                    onBackClick = { selectedCollection = null },
-                    onAddBookClick = {
-                        isAddingBook = true
+            isAddingCollection -> {
+                AddCollectionScreen(
+                    onAddCollection = { newCollectionName ->
+                        sampleCollections.add(BookCollection(newCollectionName, mutableListOf()))
+                        saveCollections()
+                        isAddingCollection = false
                     },
+                    onBackClick = { isAddingCollection = false }
+                )
+            }
+            selectedBookCollection != null && !isAddingBook -> {
+                CollectionDetailScreen(
+                    bookCollection = selectedBookCollection!!,
+                    onBackClick = { selectedBookCollection = null },
+                    onAddBookClick = { isAddingBook = true },
                     onDeleteCollection = {
-                        sampleCollections.remove(selectedCollection!!)
-                        selectedCollection = null
+                        sampleCollections.remove(selectedBookCollection!!)
+                        saveCollections()
+                        selectedBookCollection = null
                     },
                     onDeleteBook = { bookTitle ->
-                        deleteBook(selectedCollection!!, bookTitle) // Удаляем книгу
+                        selectedBookCollection?.books?.remove(bookTitle)
+                        saveCollections()
                     }
                 )
             }
-            else -> {
+            isAddingBook -> {
                 AddBookScreen(
-                    collection = selectedCollection!!,
+                    bookCollection = selectedBookCollection!!,
                     onAddBook = { newBook ->
-                        selectedCollection?.books?.add(newBook)
-                    },
-                    onBackClick = {
+                        selectedBookCollection?.books?.add(newBook)
+                        saveCollections()
                         isAddingBook = false
-                    }
+                    },
+                    onBackClick = { isAddingBook = false }
                 )
             }
         }
     }
+}
+
+// Helper function to delete a user account
+fun deleteUserAccount(context: Context, username: String) {
+    val prefs = context.getSharedPreferences("book_tracker_prefs", Context.MODE_PRIVATE)
+
+    // Удаление коллекций пользователя
+    prefs.edit().remove("user_collections_$username").apply()
+
+    // Удаление учётной записи из общего списка пользователей
+    val users = loadUsers(context).toMutableList()
+    val userIndex = users.indexOfFirst { it.username == username }
+    if (userIndex != -1) {
+        users.removeAt(userIndex)
+        saveUsers(context, users)
+    }
+
+    // Удаление текущего пользователя
+    prefs.edit().remove("current_user").apply()
 }
